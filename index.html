@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Empowerment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Updated Color Scheme: Orange and Light Blue */
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #f97316; /* Vibrant Orange */
+            --secondary: #38bdf8; /* Light Blue */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #f43f5e;
+            --border: rgba(255, 255, 255, 0.05);
+            --transition: all 0.2s ease;
+        }
+
+        body.light-mode {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-dim: #64748b;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); transition: background-color 0.3s ease; overflow: hidden; }
+
+        .app-container { display: flex; height: 100vh; padding: 0.75rem; gap: 0.75rem; }
+
+        /* Navigation Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-card);
+            border-radius: 2rem;
+            border: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .logo-section { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; min-height: 40px; }
+        .logo-icon { 
+            background: linear-gradient(135deg, var(--accent), var(--secondary)); 
+            color: white; width: 42px; height: 42px; 
+            display: flex; align-items: center; justify-content: center; border-radius: 1rem; 
+        }
+
+        .nav-group { margin-bottom: 1.5rem; }
+        .nav-label { font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 0.5rem 0.5rem; }
+        
+        .nav-item {
+            background: transparent; border: none; color: var(--text-dim);
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem;
+            border-radius: 1rem; cursor: pointer; font-weight: 600; font-size: 0.85rem;
+            width: 100%; transition: var(--transition); text-align: left;
+        }
+        .nav-item:hover { background: rgba(249, 115, 22, 0.1); color: var(--accent); }
+        .nav-item.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3); }
+
+        /* Main Workspace */
+        .main-content { flex: 1; overflow-y: auto; padding: 1rem; position: relative; }
+
+        /* Gamification Bar */
+        .gamification-bar {
+            display: flex; gap: 1rem; margin-bottom: 1.5rem; background: var(--bg-card);
+            padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border);
+            align-items: center; flex-wrap: wrap;
+        }
+        .streak-badge { color: var(--accent); font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+        .reward-badge { background: rgba(56, 189, 248, 0.1); color: var(--secondary); padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 700; cursor: default; }
+
+        /* Grid Layouts */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); padding: 1.25rem; border-radius: 1.5rem; position: relative; }
+        .stat-val { font-size: 1.5rem; font-weight: 800; display: block; margin-top: 0.5rem; color: var(--secondary); }
+
+        /* Sections */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Article/Content Cards */
+        .article-card { background: var(--bg-card); border-radius: 1.5rem; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 1rem; }
+        .media-tag { font-size: 10px; background: var(--secondary); color: white; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
+
+        /* Lists & Tables */
+        .interactive-list { list-style: none; }
+        .list-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 0.75rem; border-bottom: 1px solid var(--border); 
+            transition: var(--transition); border-radius: 0.5rem;
+        }
+        .list-item:hover { background: rgba(56, 189, 248, 0.05); }
+
+        /* Buttons & Controls */
+        .btn-action {
+            background: var(--accent); color: white; border: none; padding: 0.5rem 1rem;
+            border-radius: 0.75rem; font-weight: 600; cursor: pointer; transition: var(--transition);
+        }
+        .btn-action:hover { opacity: 0.9; transform: scale(1.02); background: #ea580c; }
+        
+        .btn-outline {
+            background: transparent; border: 1px solid var(--secondary); color: var(--secondary);
+            padding: 0.5rem 1rem; border-radius: 0.75rem; cursor: pointer; transition: var(--transition);
+        }
+        .btn-outline:hover { background: rgba(56, 189, 248, 0.1); }
+
+        /* AI Assistant */
+        .ai-assistant {
+            position: fixed; bottom: 2rem; right: 2rem; width: 350px; height: 450px;
+            background: var(--bg-card); border: 1px solid var(--secondary); border-radius: 2rem;
+            display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            overflow: hidden; z-index: 1000;
+        }
+        .ai-header { background: var(--secondary); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .ai-messages { flex: 1; padding: 1rem; overflow-y: auto; font-size: 0.85rem; }
+        .ai-input { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
+        .ai-input input { flex: 1; background: var(--bg-main); border: 1px solid var(--border); color: var(--text-main); padding: 0.5rem; border-radius: 0.5rem; outline: none; }
+        
+        /* Progress Elements */
+        .progress-bar { height: 8px; background: var(--bg-main); border-radius: 4px; overflow: hidden; margin-top: 1rem; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, var(--secondary), var(--accent)); transition: width 1s ease; }
+
+        .hidden { display: none !important; }
+        
+        /* Tooltip */
+        .tooltip-trigger:hover::after {
+            content: attr(data-tooltip);
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: #000; color: #fff; padding: 5px 10px; border-radius: 5px;
+            font-size: 10px; white-space: nowrap; z-index: 10;
+        }
+
+        /* Custom inputs */
+        .fin-input { 
+            width: 100%; background: var(--bg-main); border: 1px solid var(--border); 
+            color: var(--text-main); padding: 0.75rem; border-radius: 0.75rem; margin-bottom: 1rem; outline: none;
+        }
+        .fin-input:focus { border-color: var(--secondary); }
+
+        /* Specific range style for Light Blue theme */
+        input[type=range] { accent-color: var(--accent); cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon"><i class="fas fa-wallet"></i></div>
+                <!-- Name left blank as requested -->
+                <h1 id="app-brand-name" style="font-size: 1.2rem; font-weight: 800;"></h1>
+            </div>
+
+            <div class="nav-group">
+                <p class="nav-label">Workspace</p>
+                <button class="nav-item active" data-tab="dashboard"><i class="fas fa-th-large"></i> Dashboard</button>
+                <button class="nav-item" data-tab="academy"><i class="fas fa-lightbulb"></i> Academy & News</button>
+                <button class="nav-item" data-tab="budget"><i class="fas fa-chart-pie"></i> Budgeting</button>
+                <button class="nav-item" data-tab="banking"><i class="fas fa-university"></i> Banking & Family</button>
+            </div>
+
+            <div class="nav-group">
+                <p class="nav-label">Wealth</p>
+                <button class="nav-item" data-tab="stocks"><i class="fas fa-arrow-trend-up"></i> Stock Market</button>
+                <button class="nav-item" data-tab="loans"><i class="fas fa-hand-holding-dollar"></i> Loans & Debt</button>
+                <button class="nav-item" data-tab="retirement"><i class="fas fa-umbrella"></i> Retirement</button>
+            </div>
+
+            <div class="nav-group">
+                <p class="nav-label">Planning</p>
+                <button class="nav-item" data-tab="milestones"><i class="fas fa-flag"></i> Life Events</button>
+                <button class="nav-item" data-tab="taxes"><i class="fas fa-file-invoice"></i> Taxes</button>
+            </div>
+
+            <div style="margin-top: auto; display: flex; gap: 0.5rem; flex-direction: column;">
+                <button class="nav-item" data-tab="wrapped" style="background: linear-gradient(45deg, var(--accent), var(--secondary)); color: white;">
+                    <i class="fas fa-star"></i> 2025 Wrapped
+                </button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="theme-toggle" class="nav-item" style="width: 50%; justify-content: center;"><i class="fas fa-moon"></i></button>
+                    <button id="ai-toggle" class="nav-item" style="width: 50%; justify-content: center;" title="Toggle AI Assistant"><i class="fas fa-robot"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Gamification / Streaks -->
+            <div class="gamification-bar" id="game-bar">
+                <div class="streak-badge"><i class="fas fa-fire"></i> <span id="streak-val">14</span> Day Streak</div>
+                <div class="reward-badge tooltip-trigger" data-tooltip="Saved $1k in one month">🏆 Super Saver</div>
+                <div class="reward-badge tooltip-trigger" data-tooltip="Paid 10 loan installments">🛡️ Debt Warrior</div>
+                <div style="margin-left: auto; font-weight: 700; font-size: 0.9rem;">
+                    Credit Score: <span id="credit-val" style="color: var(--secondary);">742</span>
+                </div>
+            </div>
+
+            <!-- DASHBOARD TAB -->
+            <section id="dashboard" class="tab-content active">
+                <h2 style="margin-bottom: 1.5rem;">Welcome back, Alex</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="nav-label">Net Worth</span>
+                        <span class="stat-val" id="net-worth-display">$42,350.00</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="nav-label">Budget Status</span>
+                        <span class="stat-val">$1,840 / $2,200</span>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 83%;"></div></div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="nav-label">Subscriptions</span>
+                        <div id="sub-list">
+                            <div class="list-item" style="font-size: 0.75rem;">
+                                <span>Netflix</span>
+                                <button class="btn-action" style="padding: 2px 8px; font-size: 10px;" onclick="this.parentElement.remove()">Cancel</button>
+                            </div>
+                            <div class="list-item" style="font-size: 0.75rem;">
+                                <span>Gym Pass</span>
+                                <button class="btn-action" style="padding: 2px 8px; font-size: 10px;" onclick="this.parentElement.remove()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="article-card">
+                    <h3 style="margin-bottom: 1rem;">Spending History</h3>
+                    <div class="interactive-list" id="transaction-feed">
+                        <div class="list-item">
+                            <span><i class="fab fa-apple"></i> Digital Services</span>
+                            <span style="color: var(--danger);">-$9.99</span>
+                        </div>
+                        <div class="list-item">
+                            <span><i class="fas fa-burger"></i> Lunch Out</span>
+                            <span style="color: var(--danger);">-$15.40</span>
+                        </div>
+                        <div class="list-item">
+                            <span><i class="fas fa-bolt"></i> Zelle Transfer</span>
+                            <span style="color: var(--success);">+$120.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACADEMY TAB -->
+            <section id="academy" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Academy & Media</h2>
+                <div class="article-card">
+                    <input type="text" class="fin-input" placeholder="Search lessons: Inflation, 401k, Compound Interest...">
+                    <div class="news-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                        <div class="article-card" style="margin-bottom:0;">
+                            <span class="media-tag">Explanation</span>
+                            <h4>Stock Market Basics</h4>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-dim);">A stock represents partial ownership of a company. When the company thrives, the value of your share typically increases.</p>
+                        </div>
+                        <div class="article-card" style="margin-bottom:0;">
+                            <span class="media-tag">Video</span>
+                            <h4>How Taxes Work</h4>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-dim);">Watch a 5-minute breakdown of income brackets, deductions, and credits for first-time filers.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-card">
+                    <h4>Recommended Podcasters</h4>
+                    <div class="interactive-list" style="margin-top: 1rem;">
+                        <div class="list-item"><span>The Financial Diet</span> <i class="fas fa-play" style="color: var(--accent);"></i></div>
+                        <div class="list-item"><span>Money for the Rest of Us</span> <i class="fas fa-play" style="color: var(--accent);"></i></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BUDGETING TAB -->
+            <section id="budget" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Interactive Budgeting</h2>
+                <div class="article-card">
+                    <div class="stats-grid">
+                        <div>
+                            <label class="nav-label">Needs (Fixed Costs)</label>
+                            <input type="range" min="0" max="100" value="50" class="fin-input" style="padding:0" oninput="updateBudget(this)">
+                        </div>
+                        <div>
+                            <label class="nav-label">Wants (Lifestyle)</label>
+                            <input type="range" min="0" max="100" value="30" class="fin-input" style="padding:0" oninput="updateBudget(this)">
+                        </div>
+                        <div>
+                            <label class="nav-label">Savings & Investments</label>
+                            <input type="range" min="0" max="100" value="20" class="fin-input" style="padding:0" oninput="updateBudget(this)">
+                        </div>
+                    </div>
+                    <div id="budget-feedback" style="padding: 1.5rem; background: rgba(56, 189, 248, 0.1); border-radius: 1rem; text-align: center; font-weight: 600; color: var(--secondary);">
+                        "Perfect Balance! You're following the 50/30/20 rule."
+                    </div>
+                </div>
+            </section>
+
+            <!-- BANKING TAB -->
+            <section id="banking" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Accounts & Family</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="nav-label">Checking Account</span>
+                        <span class="stat-val">$2,450.00</span>
+                        <button class="btn-outline" style="margin-top: 1rem; width: 100%;">Transfer</button>
+                    </div>
+                    <div class="stat-card">
+                        <span class="nav-label">High-Yield Savings</span>
+                        <span class="stat-val">$15,200.00</span>
+                        <p style="font-size: 0.7rem; color: var(--success);">4.50% APY Active</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="nav-label">Child Savings (Leo)</span>
+                        <span class="stat-val">$450.00</span>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+                        <p style="font-size: 0.7rem; margin-top: 5px;">Bike Goal: 45% Complete</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STOCKS TAB -->
+            <section id="stocks" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Investment Watchlist</h2>
+                <div class="article-card">
+                    <div class="interactive-list" id="stock-list">
+                        <div class="list-item">
+                            <span><strong>AAPL</strong> Apple Inc.</span>
+                            <span style="color: var(--success);">+1.24% <i class="fas fa-caret-up"></i></span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>MSFT</strong> Microsoft</span>
+                            <span style="color: var(--success);">+0.92% <i class="fas fa-caret-up"></i></span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>VOO</strong> S&P 500 ETF</span>
+                            <span style="color: var(--danger);">-0.12% <i class="fas fa-caret-down"></i></span>
+                        </div>
+                    </div>
+                    <button class="btn-action" style="margin-top: 1.5rem;" onclick="addStock()">+ Add Ticker Symbol</button>
+                </div>
+            </section>
+
+            <!-- LOANS TAB -->
+            <section id="loans" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Loans & Debt</h2>
+                <div class="article-card">
+                    <div class="list-item">
+                        <div>
+                            <h4>Federal Student Loan</h4>
+                            <p style="font-size: 0.7rem; color: var(--text-dim);">Next payment: Mar 15</p>
+                        </div>
+                        <span class="stat-val" style="font-size: 1.1rem;">$12,400.00</span>
+                    </div>
+                    <div class="list-item">
+                        <div>
+                            <h4>Auto Loan</h4>
+                            <p style="font-size: 0.7rem; color: var(--text-dim);">3.2% APR</p>
+                        </div>
+                        <span class="stat-val" style="font-size: 1.1rem;">$8,150.00</span>
+                    </div>
+                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                        <button class="btn-action" style="flex:1;">Pay Now</button>
+                        <button class="btn-outline" style="flex:1;">Debt Snowball Tool</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RETIREMENT TAB -->
+            <section id="retirement" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Retirement Journey</h2>
+                <div class="article-card" style="text-align: center;">
+                    <span class="nav-label">Forecasted at Age 65</span>
+                    <span class="stat-val" style="font-size: 3.5rem; color: var(--accent);">$1,420,000</span>
+                    <p style="color: var(--text-dim); margin-top: 1rem;">Based on $600/mo at 8% annual returns.</p>
+                    <div class="progress-bar" style="height: 24px; border-radius: 12px;"><div class="progress-fill" style="width: 28%;"></div></div>
+                    <p style="font-size: 0.8rem; margin-top: 1rem;">You are <strong>28%</strong> towards your "Work Optional" goal!</p>
+                </div>
+            </section>
+
+            <!-- MILESTONES TAB -->
+            <section id="milestones" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Life Event Planner</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h4>Wedding 2026</h4>
+                            <i class="fas fa-heart" style="color: var(--danger);"></i>
+                        </div>
+                        <input type="text" class="fin-input" style="margin-top:1rem;" value="$25,000">
+                        <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
+                        <button class="btn-outline" style="width: 100%; margin-top: 1rem;">Cost Estimates</button>
+                    </div>
+                    <div class="stat-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h4>First Home</h4>
+                            <i class="fas fa-house" style="color: var(--secondary);"></i>
+                        </div>
+                        <button class="btn-action" style="width: 100%; margin-top: 1.5rem;">Start Down Payment Goal</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAXES TAB -->
+            <section id="taxes" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;">Smart Tax Prep</h2>
+                <div class="article-card">
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem;">
+                        <i class="fas fa-file-circle-check" style="font-size: 2.5rem; color: var(--secondary);"></i>
+                        <div>
+                            <h4 style="margin: 0;">2025 W-2 Imported</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-dim);">Verification: Complete</p>
+                        </div>
+                    </div>
+                    <div class="list-item" style="background: rgba(16, 185, 129, 0.05);">
+                        <span>Estimated Refund</span>
+                        <span style="color: var(--success); font-weight: 800; font-size: 1.2rem;">+$1,240.00</span>
+                    </div>
+                    <button class="btn-action" style="width: 100%; margin-top: 1.5rem;">Complete Filing</button>
+                </div>
+            </section>
+
+            <!-- WRAPPED TAB -->
+            <section id="wrapped" class="tab-content">
+                <div class="article-card" style="background: linear-gradient(135deg, var(--accent), var(--secondary)); color: white; text-align: center; padding: 4.5rem 2rem;">
+                    <h1 style="font-size: 3.5rem; font-weight: 900; letter-spacing: -2px;">2025 WRAPPED</h1>
+                    <p style="font-size: 1.2rem; margin-top: 1rem; font-weight: 500;">You prioritized the future this year!</p>
+                    <div class="stats-grid" style="margin-top: 3rem;">
+                        <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 1.5rem; backdrop-filter: blur(10px);">
+                            <span class="nav-label" style="color: white; opacity: 0.8;">Yearly Savings</span>
+                            <p style="font-weight: 800; font-size: 1.4rem;">$4,200.00</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: 1.5rem; backdrop-filter: blur(10px);">
+                            <span class="nav-label" style="color: white; opacity: 0.8;">Smartest Move</span>
+                            <p style="font-weight: 800; font-size: 1.4rem;">Emergency Fund 🎉</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- AI Assistant -->
+        <div id="ai-chat" class="ai-assistant hidden">
+            <div class="ai-header">
+                <span><i class="fas fa-robot"></i> AI Assistant</span>
+                <i class="fas fa-times" id="close-ai" style="cursor: pointer;"></i>
+            </div>
+            <div class="ai-messages" id="ai-msg-container">
+                <div style="background: var(--bg-main); padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    Hello! I'm your financial guide. I've analyzed your spending—you're doing great with your 'Coffee' budget this month! Need help with retirement planning or taxes?
+                </div>
+            </div>
+            <div class="ai-input">
+                <input type="text" id="ai-user-input" placeholder="Ask anything...">
+                <button onclick="sendAiMessage()" class="btn-action"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.nav-item[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const themeToggle = document.getElementById('theme-toggle');
+            const aiToggle = document.getElementById('ai-toggle');
+            const aiChat = document.getElementById('ai-chat');
+            const closeAi = document.getElementById('close-ai');
+
+            // Tab Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const target = item.getAttribute('data-tab');
+                    navItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    tabContents.forEach(tab => {
+                        tab.classList.remove('active');
+                        if (tab.id === target) tab.classList.add('active');
+                    });
+                });
+            });
+
+            // Theme Switcher
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const icon = themeToggle.querySelector('i');
+                icon.classList.toggle('fa-moon');
+                icon.classList.toggle('fa-sun');
+            });
+
+            // AI Toggle
+            aiToggle.addEventListener('click', () => aiChat.classList.toggle('hidden'));
+            closeAi.addEventListener('click', () => aiChat.classList.add('hidden'));
+
+            // Interactive Budget Feedback
+            window.updateBudget = (el) => {
+                const feedback = document.getElementById('budget-feedback');
+                const val = parseInt(el.value);
+                if(val > 70) {
+                    feedback.innerText = "Warning: High allocation. This might affect other categories.";
+                    feedback.style.color = "var(--danger)";
+                } else if(val < 15) {
+                    feedback.innerText = "Super Frugal! You're maximizing your freedom fund.";
+                    feedback.style.color = "var(--success)";
+                } else {
+                    feedback.innerText = "Perfect Balance! You're following the 50/30/20 rule.";
+                    feedback.style.color = "var(--secondary)";
+                }
+            };
+
+            // Stock Ticker Simulator
+            window.addStock = () => {
+                const list = document.getElementById('stock-list');
+                const symbol = prompt("Enter Stock Ticker (e.g., AMZN, GOOGL):");
+                if(symbol) {
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.innerHTML = `<span><strong>${symbol.toUpperCase()}</strong> New Watch Item</span><span style="color: var(--secondary);">Searching... <i class="fas fa-spinner fa-spin"></i></span>`;
+                    list.appendChild(item);
+                    
+                    setTimeout(() => {
+                        item.querySelector('span:last-child').innerHTML = `+0.45% <i class="fas fa-caret-up"></i>`;
+                        item.querySelector('span:last-child').style.color = 'var(--success)';
+                    }, 1500);
+                }
+            };
+
+            // AI Chat Simulation
+            window.sendAiMessage = () => {
+                const input = document.getElementById('ai-user-input');
+                const container = document.getElementById('ai-msg-container');
+                if(!input.value) return;
+
+                const userMsg = document.createElement('div');
+                userMsg.style.cssText = "margin-bottom: 1rem; text-align: right; color: var(--accent); font-weight: 700;";
+                userMsg.innerText = input.value;
+                container.appendChild(userMsg);
+
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.style.cssText = "background: var(--bg-main); padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem;";
+                    botMsg.innerText = "Based on my data, " + input.value + " is a common topic! For your specific goals, I recommend reviewing the 'Academy' section on compound interest to see how this fits into your long-term plan.";
+                    container.appendChild(botMsg);
+                    container.scrollTop = container.scrollHeight;
+                }, 1000);
+
+                input.value = "";
+            };
+        });
+    </script>
+</body>
+</html>
