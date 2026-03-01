@@ -121,7 +121,7 @@
             overflow: hidden; z-index: 1000;
         }
         .ai-header { background: var(--secondary); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
-        .ai-messages { flex: 1; padding: 1rem; overflow-y: auto; font-size: 0.85rem; }
+        .ai-messages { flex: 1; padding: 1rem; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.75rem; }
         .ai-input { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
         .ai-input input { flex: 1; background: var(--bg-main); border: 1px solid var(--border); color: var(--text-main); padding: 0.5rem; border-radius: 0.5rem; outline: none; }
         
@@ -146,8 +146,11 @@
         }
         .fin-input:focus { border-color: var(--secondary); }
 
-        /* Specific range style for Light Blue theme */
         input[type=range] { accent-color: var(--accent); cursor: pointer; }
+
+        /* Form Row for Interactions */
+        .form-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+        .form-row .fin-input { margin-bottom: 0; flex: 1; min-width: 120px; }
     </style>
 </head>
 <body>
@@ -205,74 +208,64 @@
 
             <!-- DASHBOARD TAB -->
             <section id="dashboard" class="tab-content active">
-                <h2 style="margin-bottom: 1.5rem;">Welcome back, Alex</h2>
+                <h2 style="margin-bottom: 1.5rem;">Welcome back, User</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <span class="nav-label">Net Worth</span>
+                        <span class="nav-label">Total Net Worth</span>
                         <span class="stat-val" id="net-worth-display">$42,350.00</span>
                     </div>
                     <div class="stat-card">
                         <span class="nav-label">Budget Status</span>
-                        <span class="stat-val">$1,840 / $2,200</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 83%;"></div></div>
+                        <span class="stat-val" id="budget-display">$1,840 / $2,200</span>
+                        <div class="progress-bar"><div class="progress-fill" id="budget-fill" style="width: 83%;"></div></div>
                     </div>
-                    <div class="stat-card">
-                        <span class="nav-label">Subscriptions</span>
-                        <div id="sub-list">
-                            <div class="list-item" style="font-size: 0.75rem;">
-                                <span>Netflix</span>
-                                <button class="btn-action" style="padding: 2px 8px; font-size: 10px;" onclick="this.parentElement.remove()">Cancel</button>
-                            </div>
-                            <div class="list-item" style="font-size: 0.75rem;">
-                                <span>Gym Pass</span>
-                                <button class="btn-action" style="padding: 2px 8px; font-size: 10px;" onclick="this.parentElement.remove()">Cancel</button>
-                            </div>
-                        </div>
+                </div>
+
+                <!-- Interactive Transaction Form -->
+                <div class="article-card">
+                    <h3 style="margin-bottom: 1rem;">Add New Transaction</h3>
+                    <div class="form-row">
+                        <input type="text" id="trans-desc" class="fin-input" placeholder="Description (e.g., Groceries, Paycheck)">
+                        <input type="number" id="trans-amt" class="fin-input" placeholder="Amount ($)" style="max-width: 150px;">
+                        <select id="trans-type" class="fin-input" style="max-width: 120px;">
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                        <button class="btn-action" onclick="addTransaction()"><i class="fas fa-plus"></i> Add</button>
                     </div>
                 </div>
 
                 <div class="article-card">
-                    <h3 style="margin-bottom: 1rem;">Spending History</h3>
+                    <h3 style="margin-bottom: 1rem;">Recent Activity</h3>
                     <div class="interactive-list" id="transaction-feed">
-                        <div class="list-item">
-                            <span><i class="fab fa-apple"></i> Digital Services</span>
-                            <span style="color: var(--danger);">-$9.99</span>
-                        </div>
-                        <div class="list-item">
-                            <span><i class="fas fa-burger"></i> Lunch Out</span>
-                            <span style="color: var(--danger);">-$15.40</span>
-                        </div>
-                        <div class="list-item">
-                            <span><i class="fas fa-bolt"></i> Zelle Transfer</span>
-                            <span style="color: var(--success);">+$120.00</span>
-                        </div>
+                        <!-- Filled dynamically by JavaScript -->
                     </div>
                 </div>
             </section>
 
-            <!-- ACADEMY TAB -->
+            <!-- ACADEMY & NEWS TAB -->
             <section id="academy" class="tab-content">
-                <h2 style="margin-bottom: 1.5rem;">Academy & Media</h2>
+                <h2 style="margin-bottom: 1.5rem;">Academy & Market News</h2>
                 <div class="article-card">
-                    <input type="text" class="fin-input" placeholder="Search lessons: Inflation, 401k, Compound Interest...">
-                    <div class="news-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
-                        <div class="article-card" style="margin-bottom:0;">
-                            <span class="media-tag">Explanation</span>
+                    <h3 style="margin-bottom: 1rem;">Latest Financial News</h3>
+                    <div id="news-feed" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Filled dynamically by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="article-card">
+                    <h4>Educational Resources</h4>
+                    <div class="news-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div class="article-card" style="margin-bottom:0; background: var(--bg-main);">
+                            <span class="media-tag">Guide</span>
                             <h4>Stock Market Basics</h4>
                             <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-dim);">A stock represents partial ownership of a company. When the company thrives, the value of your share typically increases.</p>
                         </div>
-                        <div class="article-card" style="margin-bottom:0;">
+                        <div class="article-card" style="margin-bottom:0; background: var(--bg-main);">
                             <span class="media-tag">Video</span>
                             <h4>How Taxes Work</h4>
-                            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-dim);">Watch a 5-minute breakdown of income brackets, deductions, and credits for first-time filers.</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-dim);">Watch a breakdown of income brackets, deductions, and credits for first-time filers.</p>
                         </div>
-                    </div>
-                </div>
-                <div class="article-card">
-                    <h4>Recommended Podcasters</h4>
-                    <div class="interactive-list" style="margin-top: 1rem;">
-                        <div class="list-item"><span>The Financial Diet</span> <i class="fas fa-play" style="color: var(--accent);"></i></div>
-                        <div class="list-item"><span>Money for the Rest of Us</span> <i class="fas fa-play" style="color: var(--accent);"></i></div>
                     </div>
                 </div>
             </section>
@@ -281,93 +274,106 @@
             <section id="budget" class="tab-content">
                 <h2 style="margin-bottom: 1.5rem;">Interactive Budgeting</h2>
                 <div class="article-card">
+                    <p style="margin-bottom: 1rem; color: var(--text-dim);">Adjust your ideal allocations to see how it balances out.</p>
                     <div class="stats-grid">
                         <div>
-                            <label class="nav-label">Needs (Fixed Costs)</label>
-                            <input type="range" min="0" max="100" value="50" class="fin-input" style="padding:0" oninput="updateBudget(this)">
+                            <label class="nav-label">Needs (Fixed Costs) - <span id="needs-val">50</span>%</label>
+                            <input type="range" id="range-needs" min="0" max="100" value="50" class="fin-input" style="padding:0" oninput="updateBudgetSliders('needs')">
                         </div>
                         <div>
-                            <label class="nav-label">Wants (Lifestyle)</label>
-                            <input type="range" min="0" max="100" value="30" class="fin-input" style="padding:0" oninput="updateBudget(this)">
+                            <label class="nav-label">Wants (Lifestyle) - <span id="wants-val">30</span>%</label>
+                            <input type="range" id="range-wants" min="0" max="100" value="30" class="fin-input" style="padding:0" oninput="updateBudgetSliders('wants')">
                         </div>
                         <div>
-                            <label class="nav-label">Savings & Investments</label>
-                            <input type="range" min="0" max="100" value="20" class="fin-input" style="padding:0" oninput="updateBudget(this)">
+                            <label class="nav-label">Savings & Investments - <span id="savings-val">20</span>%</label>
+                            <input type="range" id="range-savings" min="0" max="100" value="20" class="fin-input" style="padding:0" oninput="updateBudgetSliders('savings')">
                         </div>
                     </div>
-                    <div id="budget-feedback" style="padding: 1.5rem; background: rgba(56, 189, 248, 0.1); border-radius: 1rem; text-align: center; font-weight: 600; color: var(--secondary);">
+                    <div id="budget-feedback" style="padding: 1.5rem; background: rgba(56, 189, 248, 0.1); border-radius: 1rem; text-align: center; font-weight: 600; color: var(--secondary); margin-top: 1rem;">
                         "Perfect Balance! You're following the 50/30/20 rule."
                     </div>
                 </div>
             </section>
 
             <!-- BANKING TAB -->
-            <section id="banking" class="tab-content">
-                <h2 style="margin-bottom: 1.5rem;">Accounts & Family</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <span class="nav-label">Checking Account</span>
-                        <span class="stat-val">$2,450.00</span>
-                        <button class="btn-outline" style="margin-top: 1rem; width: 100%;">Transfer</button>
-                    </div>
-                    <div class="stat-card">
-                        <span class="nav-label">High-Yield Savings</span>
-                        <span class="stat-val">$15,200.00</span>
-                        <p style="font-size: 0.7rem; color: var(--success);">4.50% APY Active</p>
-                    </div>
-                    <div class="stat-card">
-                        <span class="nav-label">Child Savings (Leo)</span>
-                        <span class="stat-val">$450.00</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
-                        <p style="font-size: 0.7rem; margin-top: 5px;">Bike Goal: 45% Complete</p>
-                    </div>
+        <section id="banking" class="tab-content">
+            <h2 style="margin-bottom: 1.5rem;">Accounts & Family</h2>
+            
+            <!-- New Update Balances Card -->
+            <div class="article-card" style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 1rem;">Update Account Balances</h3>
+                <div class="form-row">
+                    <input type="number" id="input-checking" class="fin-input" placeholder="Set Checking Balance ($)">
+                    <button class="btn-action" onclick="updateBalance('checking')">Update Checking</button>
                 </div>
-            </section>
+                <div class="form-row">
+                    <input type="number" id="input-savings" class="fin-input" placeholder="Set Savings Balance ($)">
+                    <button class="btn-action" onclick="updateBalance('savings')">Update Savings</button>
+                </div>
+            </div>
 
-            <!-- STOCKS TAB -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="nav-label">Checking Account</span>
+                    <span class="stat-val" id="checking-display">$2,450.00</span>
+                </div>
+                <div class="stat-card">
+                    <span class="nav-label">High-Yield Savings</span>
+                    <span class="stat-val" id="savings-display">$15,200.00</span>
+                    <p style="font-size: 0.7rem; color: var(--success);">4.50% APY Active</p>
+                </div>
+                <div class="stat-card">
+                    <span class="nav-label">Child Savings (Leo)</span>
+                    <span class="stat-val" id="child-savings-display">$450.00</span>
+                    <div class="progress-bar"><div class="progress-fill" id="child-savings-fill" style="width: 45%;"></div></div>
+                    <p style="font-size: 0.7rem; margin-top: 5px;">Bike Goal: 45% Complete</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- STOCKS TAB -->
             <section id="stocks" class="tab-content">
-                <h2 style="margin-bottom: 1.5rem;">Investment Watchlist</h2>
+                <h2 style="margin-bottom: 1.5rem;">Your Portfolio & Market</h2>
+                
+                <!-- Interactive Stock Buying Form -->
                 <div class="article-card">
-                    <div class="interactive-list" id="stock-list">
-                        <div class="list-item">
-                            <span><strong>AAPL</strong> Apple Inc.</span>
-                            <span style="color: var(--success);">+1.24% <i class="fas fa-caret-up"></i></span>
-                        </div>
-                        <div class="list-item">
-                            <span><strong>MSFT</strong> Microsoft</span>
-                            <span style="color: var(--success);">+0.92% <i class="fas fa-caret-up"></i></span>
-                        </div>
-                        <div class="list-item">
-                            <span><strong>VOO</strong> S&P 500 ETF</span>
-                            <span style="color: var(--danger);">-0.12% <i class="fas fa-caret-down"></i></span>
-                        </div>
+                    <h3 style="margin-bottom: 1rem;">Invest in Stocks</h3>
+                    <div class="form-row">
+                        <input type="text" id="stock-symbol" class="fin-input" placeholder="Ticker (e.g. AAPL, TSLA)" style="text-transform: uppercase;">
+                        <input type="number" id="stock-amount" class="fin-input" placeholder="Amount to Invest ($)">
+                        <button class="btn-action" onclick="buyStock()">Buy Stock</button>
                     </div>
-                    <button class="btn-action" style="margin-top: 1.5rem;" onclick="addStock()">+ Add Ticker Symbol</button>
+                    <p id="stock-msg" style="font-size: 0.85rem; color: var(--success); display: none;">Purchase successful!</p>
+                </div>
+
+                <div class="article-card">
+                    <h3>Your Holdings</h3>
+                    <div class="interactive-list" id="portfolio-list" style="margin-top: 1rem;">
+                        <!-- Filled dynamically by JavaScript -->
+                    </div>
                 </div>
             </section>
 
             <!-- LOANS TAB -->
             <section id="loans" class="tab-content">
                 <h2 style="margin-bottom: 1.5rem;">Loans & Debt</h2>
+                
+                <!-- Make a Payment Card -->
                 <div class="article-card">
-                    <div class="list-item">
-                        <div>
-                            <h4>Federal Student Loan</h4>
-                            <p style="font-size: 0.7rem; color: var(--text-dim);">Next payment: Mar 15</p>
-                        </div>
-                        <span class="stat-val" style="font-size: 1.1rem;">$12,400.00</span>
+                    <h3 style="margin-bottom: 1rem;">Make a Payment</h3>
+                    <div class="form-row">
+                        <select id="loan-select" class="fin-input" style="max-width: 200px;">
+                            <option value="student">Federal Student Loan</option>
+                            <option value="auto">Auto Loan</option>
+                        </select>
+                        <input type="number" id="loan-payment-amt" class="fin-input" placeholder="Payment Amount ($)">
+                        <button class="btn-action" onclick="payLoan()">Pay from Checking</button>
                     </div>
-                    <div class="list-item">
-                        <div>
-                            <h4>Auto Loan</h4>
-                            <p style="font-size: 0.7rem; color: var(--text-dim);">3.2% APR</p>
-                        </div>
-                        <span class="stat-val" style="font-size: 1.1rem;">$8,150.00</span>
-                    </div>
-                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-                        <button class="btn-action" style="flex:1;">Pay Now</button>
-                        <button class="btn-outline" style="flex:1;">Debt Snowball Tool</button>
-                    </div>
+                    <p id="loan-msg" style="font-size: 0.85rem; color: var(--success); display: none; margin-top: 0.5rem;">Payment successful!</p>
+                </div>
+
+                <div class="article-card" id="loans-list">
+                    <!-- Filled dynamically by JavaScript -->
                 </div>
             </section>
 
@@ -392,9 +398,8 @@
                             <h4>Wedding 2026</h4>
                             <i class="fas fa-heart" style="color: var(--danger);"></i>
                         </div>
-                        <input type="text" class="fin-input" style="margin-top:1rem;" value="$25,000">
+                        <input type="text" class="fin-input" style="margin-top:1rem;" value="$25,000" disabled>
                         <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
-                        <button class="btn-outline" style="width: 100%; margin-top: 1rem;">Cost Estimates</button>
                     </div>
                     <div class="stat-card">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -421,7 +426,6 @@
                         <span>Estimated Refund</span>
                         <span style="color: var(--success); font-weight: 800; font-size: 1.2rem;">+$1,240.00</span>
                     </div>
-                    <button class="btn-action" style="width: 100%; margin-top: 1.5rem;">Complete Filing</button>
                 </div>
             </section>
 
@@ -451,19 +455,337 @@
                 <i class="fas fa-times" id="close-ai" style="cursor: pointer;"></i>
             </div>
             <div class="ai-messages" id="ai-msg-container">
-                <div style="background: var(--bg-main); padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-                    Hello! I'm your financial guide. I've analyzed your spending—you're doing great with your 'Coffee' budget this month! Need help with retirement planning or taxes?
+                <div style="background: var(--bg-main); padding: 0.75rem; border-radius: 0.5rem;">
+                    Hello! I'm your interactive financial guide. You can ask me things like "How do I save?", "Explain stocks", or "Budgeting tips". How can I help today?
                 </div>
             </div>
             <div class="ai-input">
-                <input type="text" id="ai-user-input" placeholder="Ask anything...">
+                <input type="text" id="ai-user-input" placeholder="Ask about stocks, budget, saving..." onkeypress="handleAiKeyPress(event)">
                 <button onclick="sendAiMessage()" class="btn-action"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <script>
+        // --- APP STATE & DATA ---
+        let appState = {
+            checking: 2450.00,
+            savings: 15200.00,
+            childSavings: 450.00,
+            transactions: [
+                { id: 1, desc: 'Digital Services', amt: -9.99, type: 'expense', icon: 'fa-apple' },
+                { id: 2, desc: 'Lunch Out', amt: -15.40, type: 'expense', icon: 'fa-burger' },
+                { id: 3, desc: 'Zelle Transfer (Salary)', amt: 2100.00, type: 'income', icon: 'fa-money-bill-wave' }
+            ],
+            portfolio: [
+                { symbol: 'VOO', amount: 5000, change: -0.12 },
+                { symbol: 'AAPL', amount: 1200, change: 1.24 },
+                { symbol: 'MSFT', amount: 850, change: 0.92 }
+            ],
+            loans: [
+                { id: 'student', name: 'Federal Student Loan', balance: 12400.00, detail: 'Next payment: Mar 15' },
+                { id: 'auto', name: 'Auto Loan', balance: 8150.00, detail: '3.2% APR' }
+            ]
+        };
+
+        const newsArticles = [
+            { title: "S&P 500 Hits New Milestone", source: "Market Watch", time: "2 hours ago", desc: "Broad market index climbs as tech sector shows strong quarterly earnings..." },
+            { title: "5 Tips for Building an Emergency Fund", source: "Personal Finance Daily", time: "5 hours ago", desc: "Experts recommend saving 3-6 months of living expenses. Here's how to start small." },
+            { title: "Understanding Compound Interest", source: "Wealth Builders", time: "1 day ago", desc: "Why starting to invest in your 20s can literally double your retirement outlook." },
+            { title: "Are High Yield Savings Accounts Still Worth It?", source: "Bank Review", time: "2 days ago", desc: "With rate cuts looming, we look at the best places to park your cash." }
+        ];
+
+        // --- FORMATTING UTILS ---
+        const formatMoney = (num) => {
+            return '$' + num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        };
+
+        // --- DOM ELEMENTS ---
+        const elNetWorth = document.getElementById('net-worth-display');
+        const elChecking = document.getElementById('checking-display');
+        const elTransFeed = document.getElementById('transaction-feed');
+        const elPortfolio = document.getElementById('portfolio-list');
+        const elNewsFeed = document.getElementById('news-feed');
+        const elSavings = document.getElementById('savings-display');
+        const elChildSavings = document.getElementById('child-savings-display');
+        const elChildFill = document.getElementById('child-savings-fill');
+        const elLoansList = document.getElementById('loans-list');
+
+        // --- CORE LOGIC ---
+        function calculateNetWorth() {
+            const assetsCash = appState.checking + appState.savings + appState.childSavings;
+            const assetsInvestments = appState.portfolio.reduce((sum, stock) => sum + stock.amount, 0);
+            const liabilities = appState.loans.reduce((sum, loan) => sum + loan.balance, 0);
+            return assetsCash + assetsInvestments - liabilities;
+        }
+
+        function updateAllViews() {
+            renderDashboard();
+            renderBanking();
+            renderPortfolio();
+            renderLoans();
+        }
+
+        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
+            setupNavigation();
+            updateAllViews();
+            renderNews();
+        });
+
+        // --- RENDER FUNCTIONS ---
+        function renderDashboard() {
+            elNetWorth.innerText = formatMoney(calculateNetWorth());
+            elChecking.innerText = formatMoney(appState.checking);
+            
+            elTransFeed.innerHTML = '';
+            // Show last 5 transactions
+            const recent = [...appState.transactions].reverse().slice(0, 5);
+            recent.forEach(t => {
+                const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+                const sign = t.type === 'income' ? '+' : '';
+                const icon = t.icon || (t.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up');
+                
+                elTransFeed.innerHTML += `
+                    <div class="list-item">
+                        <span><i class="fas ${icon}" style="width: 20px; color: var(--text-dim);"></i> ${t.desc}</span>
+                        <span style="color: ${color}; font-weight: 600;">${sign}${formatMoney(Math.abs(t.amt))}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function renderBanking() {
+            if(elSavings) elSavings.innerText = formatMoney(appState.savings);
+            if(elChildSavings) elChildSavings.innerText = formatMoney(appState.childSavings);
+            if(elChildFill) elChildFill.style.width = Math.min(100, (appState.childSavings / 1000) * 100) + '%';
+        }
+
+        function renderLoans() {
+            if(!elLoansList) return;
+            elLoansList.innerHTML = '';
+            appState.loans.forEach(loan => {
+                elLoansList.innerHTML += `
+                    <div class="list-item">
+                        <div>
+                            <h4>${loan.name}</h4>
+                            <p style="font-size: 0.7rem; color: var(--text-dim);">${loan.detail}</p>
+                        </div>
+                        <span class="stat-val" style="font-size: 1.1rem; color: var(--danger);">${formatMoney(loan.balance)}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function renderPortfolio() {
+            elPortfolio.innerHTML = '';
+            if (appState.portfolio.length === 0) {
+                elPortfolio.innerHTML = '<p style="color: var(--text-dim); text-align: center; padding: 1rem;">No stocks owned yet.</p>';
+                return;
+            }
+
+            appState.portfolio.forEach(stock => {
+                const color = stock.change >= 0 ? 'var(--success)' : 'var(--danger)';
+                const icon = stock.change >= 0 ? 'fa-caret-up' : 'fa-caret-down';
+                const sign = stock.change > 0 ? '+' : '';
+                
+                elPortfolio.innerHTML += `
+                    <div class="list-item">
+                        <div>
+                            <strong>${stock.symbol}</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-dim);">Value: ${formatMoney(stock.amount)}</div>
+                        </div>
+                        <span style="color: ${color}; font-weight: bold;">
+                            ${sign}${stock.change}% <i class="fas ${icon}"></i>
+                        </span>
+                    </div>
+                `;
+            });
+        }
+
+        function renderNews() {
+            elNewsFeed.innerHTML = '';
+            newsArticles.forEach(article => {
+                elNewsFeed.innerHTML += `
+                    <div style="padding: 1rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--bg-main);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span class="media-tag" style="background: var(--text-dim);">${article.source}</span>
+                            <span style="font-size: 0.7rem; color: var(--text-dim);">${article.time}</span>
+                        </div>
+                        <h4 style="margin-bottom: 0.25rem;">${article.title}</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-dim);">${article.desc}</p>
+                        <button class="btn-outline" style="margin-top: 0.75rem; padding: 0.25rem 0.75rem; font-size: 0.75rem;">Read Article</button>
+                    </div>
+                `;
+            });
+        }
+
+        // --- INTERACTIVE ACTIONS ---
+        window.updateBalance = (type) => {
+            const inputEl = document.getElementById(`input-${type}`);
+            const newAmount = parseFloat(inputEl.value);
+            
+            if (isNaN(newAmount) || newAmount < 0) return alert("Please enter a valid positive amount.");
+            
+            if (type === 'checking') appState.checking = newAmount;
+            if (type === 'savings') appState.savings = newAmount;
+            
+            inputEl.value = '';
+            updateAllViews();
+        };
+
+        window.payLoan = () => {
+            const selectEl = document.getElementById('loan-select');
+            const amtInput = document.getElementById('loan-payment-amt');
+            const msgEl = document.getElementById('loan-msg');
+            const amount = parseFloat(amtInput.value);
+
+            if (isNaN(amount) || amount <= 0) return alert("Enter a valid payment amount.");
+            if (amount > appState.checking) return alert("Insufficient checking funds!");
+
+            const loan = appState.loans.find(l => l.id === selectEl.value);
+            if (!loan) return;
+
+            // Process Payment
+            appState.checking -= amount;
+            loan.balance = Math.max(0, loan.balance - amount); // Prevent negative loan balance
+            
+            amtInput.value = '';
+            updateAllViews();
+
+            msgEl.style.display = 'block';
+            setTimeout(() => msgEl.style.display = 'none', 3000);
+        };
+
+        window.addTransaction = () => {
+            const descInput = document.getElementById('trans-desc');
+            const amtInput = document.getElementById('trans-amt');
+            const typeInput = document.getElementById('trans-type');
+
+            if (!descInput.value || !amtInput.value) return alert("Please fill out both description and amount.");
+
+            let amt = parseFloat(amtInput.value);
+            if (typeInput.value === 'expense') amt = -Math.abs(amt);
+            else amt = Math.abs(amt);
+
+            // Update State
+            appState.transactions.push({
+                id: Date.now(),
+                desc: descInput.value,
+                amt: amt,
+                type: typeInput.value,
+                icon: typeInput.value === 'income' ? 'fa-coins' : 'fa-receipt'
+            });
+
+            appState.checking += amt;
+
+            // Clean UI
+            descInput.value = '';
+            amtInput.value = '';
+            updateAllViews();
+        };
+
+        window.buyStock = () => {
+            const symbolInput = document.getElementById('stock-symbol');
+            const amtInput = document.getElementById('stock-amount');
+            const msgEl = document.getElementById('stock-msg');
+
+            const symbol = symbolInput.value.toUpperCase();
+            const amount = parseFloat(amtInput.value);
+
+            if (!symbol || !amount || amount <= 0) return alert("Enter valid ticker and amount.");
+            if (amount > appState.checking) return alert("Insufficient checking funds!");
+
+            // Update State
+            appState.checking -= amount; // Deduct from cash
+
+            // Check if already own it
+            const existing = appState.portfolio.find(s => s.symbol === symbol);
+            if (existing) {
+                existing.amount += amount;
+            } else {
+                appState.portfolio.push({
+                    symbol: symbol,
+                    amount: amount,
+                    change: parseFloat((Math.random() * 2 - 0.5).toFixed(2)) // random mock change
+                });
+            }
+
+            symbolInput.value = '';
+            amtInput.value = '';
+            updateAllViews(); 
+
+            msgEl.style.display = 'block';
+            setTimeout(() => msgEl.style.display = 'none', 3000);
+        };
+
+        window.updateBudgetSliders = (changedType) => {
+            const needs = document.getElementById('range-needs');
+            const wants = document.getElementById('range-wants');
+            const savings = document.getElementById('range-savings');
+            const feedback = document.getElementById('budget-feedback');
+
+            document.getElementById('needs-val').innerText = needs.value;
+            document.getElementById('wants-val').innerText = wants.value;
+            document.getElementById('savings-val').innerText = savings.value;
+
+            const total = parseInt(needs.value) + parseInt(wants.value) + parseInt(savings.value);
+
+            if (total !== 100) {
+                feedback.innerText = `Total is ${total}%. Please adjust so it equals exactly 100%.`;
+                feedback.style.color = "var(--warning)";
+            } else if (parseInt(savings.value) >= 20 && parseInt(needs.value) <= 50) {
+                feedback.innerText = "Excellent! You are hitting key saving goals with a 50/30/20 style balance.";
+                feedback.style.color = "var(--success)";
+            } else if (parseInt(wants.value) > 40) {
+                feedback.innerText = "Warning: High allocation to 'Wants'. Consider shifting some to Savings.";
+                feedback.style.color = "var(--danger)";
+            } else {
+                feedback.innerText = "Good structure. Keep monitoring to ensure you stay on track.";
+                feedback.style.color = "var(--secondary)";
+            }
+        };
+
+        // --- AI CHATBOT LOGIC ---
+        window.handleAiKeyPress = (e) => {
+            if (e.key === 'Enter') sendAiMessage();
+        };
+
+        window.sendAiMessage = () => {
+            const input = document.getElementById('ai-user-input');
+            const container = document.getElementById('ai-msg-container');
+            const text = input.value.trim();
+            if(!text) return;
+
+            // Add User Message
+            container.innerHTML += `<div style="text-align: right; color: var(--accent); font-weight: 700;">${text}</div>`;
+            input.value = "";
+            container.scrollTop = container.scrollHeight;
+
+            // Generate AI Response based on keywords
+            setTimeout(() => {
+                const lowerText = text.toLowerCase();
+                let response = "That's a great question! For detailed information on that, I recommend browsing our 'Academy & News' section on the left.";
+
+                if (lowerText.includes('hello') || lowerText.includes('hi')) {
+                    response = "Hi there! I can help you understand your budget, give tips on saving, or explain how the stock market works. What's on your mind?";
+                } else if (lowerText.includes('stock') || lowerText.includes('invest') || lowerText.includes('market')) {
+                    response = "Investing is a great way to grow wealth. You can actually practice buying stocks right here in the 'Stock Market' tab! Remember, a diversified portfolio (like index funds) is generally safer than picking single stocks.";
+                } else if (lowerText.includes('budget') || lowerText.includes('spend')) {
+                    response = "A popular budgeting method is the 50/30/20 rule: 50% for Needs, 30% for Wants, and 20% for Savings. Check out the 'Budgeting' tab to play with the interactive sliders!";
+                } else if (lowerText.includes('save') || lowerText.includes('saving')) {
+                    response = "Building an emergency fund of 3-6 months of living expenses should be your first saving goal. After that, look into High-Yield Savings Accounts to earn more interest on your cash.";
+                } else if (lowerText.includes('debt') || lowerText.includes('loan')) {
+                    response = "When paying down debt, look into the 'Snowball Method' (paying smallest balances first for psychological wins) or the 'Avalanche Method' (paying highest interest rates first to save money).";
+                }
+
+                container.innerHTML += `<div style="background: var(--bg-main); padding: 0.75rem; border-radius: 0.5rem;">${response}</div>`;
+                container.scrollTop = container.scrollHeight;
+            }, 800);
+        };
+
+        // --- NAVIGATION & UI TOGGLES ---
+        function setupNavigation() {
             const navItems = document.querySelectorAll('.nav-item[data-tab]');
             const tabContents = document.querySelectorAll('.tab-content');
             const themeToggle = document.getElementById('theme-toggle');
@@ -471,7 +793,6 @@
             const aiChat = document.getElementById('ai-chat');
             const closeAi = document.getElementById('close-ai');
 
-            // Tab Navigation
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
                     const target = item.getAttribute('data-tab');
@@ -484,7 +805,6 @@
                 });
             });
 
-            // Theme Switcher
             themeToggle.addEventListener('click', () => {
                 document.body.classList.toggle('light-mode');
                 const icon = themeToggle.querySelector('i');
@@ -492,65 +812,9 @@
                 icon.classList.toggle('fa-sun');
             });
 
-            // AI Toggle
             aiToggle.addEventListener('click', () => aiChat.classList.toggle('hidden'));
             closeAi.addEventListener('click', () => aiChat.classList.add('hidden'));
-
-            // Interactive Budget Feedback
-            window.updateBudget = (el) => {
-                const feedback = document.getElementById('budget-feedback');
-                const val = parseInt(el.value);
-                if(val > 70) {
-                    feedback.innerText = "Warning: High allocation. This might affect other categories.";
-                    feedback.style.color = "var(--danger)";
-                } else if(val < 15) {
-                    feedback.innerText = "Super Frugal! You're maximizing your freedom fund.";
-                    feedback.style.color = "var(--success)";
-                } else {
-                    feedback.innerText = "Perfect Balance! You're following the 50/30/20 rule.";
-                    feedback.style.color = "var(--secondary)";
-                }
-            };
-
-            // Stock Ticker Simulator
-            window.addStock = () => {
-                const list = document.getElementById('stock-list');
-                const symbol = prompt("Enter Stock Ticker (e.g., AMZN, GOOGL):");
-                if(symbol) {
-                    const item = document.createElement('div');
-                    item.className = 'list-item';
-                    item.innerHTML = `<span><strong>${symbol.toUpperCase()}</strong> New Watch Item</span><span style="color: var(--secondary);">Searching... <i class="fas fa-spinner fa-spin"></i></span>`;
-                    list.appendChild(item);
-                    
-                    setTimeout(() => {
-                        item.querySelector('span:last-child').innerHTML = `+0.45% <i class="fas fa-caret-up"></i>`;
-                        item.querySelector('span:last-child').style.color = 'var(--success)';
-                    }, 1500);
-                }
-            };
-
-            // AI Chat Simulation
-            window.sendAiMessage = () => {
-                const input = document.getElementById('ai-user-input');
-                const container = document.getElementById('ai-msg-container');
-                if(!input.value) return;
-
-                const userMsg = document.createElement('div');
-                userMsg.style.cssText = "margin-bottom: 1rem; text-align: right; color: var(--accent); font-weight: 700;";
-                userMsg.innerText = input.value;
-                container.appendChild(userMsg);
-
-                setTimeout(() => {
-                    const botMsg = document.createElement('div');
-                    botMsg.style.cssText = "background: var(--bg-main); padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem;";
-                    botMsg.innerText = "Based on my data, " + input.value + " is a common topic! For your specific goals, I recommend reviewing the 'Academy' section on compound interest to see how this fits into your long-term plan.";
-                    container.appendChild(botMsg);
-                    container.scrollTop = container.scrollHeight;
-                }, 1000);
-
-                input.value = "";
-            };
-        });
+        }
     </script>
 </body>
 </html>
